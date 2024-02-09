@@ -1,4 +1,0 @@
-DROP SCHEMA IF EXISTS `demo`;
-
-CREATE SCHEMA `demo`;
-USE `demo` ;

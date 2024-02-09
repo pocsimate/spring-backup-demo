@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  mariadb:
+    image: mariadb:latest
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+      start_period: 10s
+      start_interval: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - database-data:/var/lib/mysql
+      - ./database-setup.sql:/docker-entrypoint-initdb.d/0_init.sql
+
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: test
+
+  app:
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/demo
+      SPRING_DATASOURCE_USERNAME: test
+      SPRING_DATASOURCE_PASSWORD: test
+    depends_on:
+      mariadb:
+        condition: service_healthy
+        restart: true
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+
+    ports:
+      - "8080:8080"
+volumes:
+  database-data:
+networks:
+  default:
+    name: app_default
