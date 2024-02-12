@@ -17,7 +17,7 @@ public class BackupProcessHandler {
             }
 
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // TODO: appropriate logging
         }
 
         return isSuccessfulProcess;
